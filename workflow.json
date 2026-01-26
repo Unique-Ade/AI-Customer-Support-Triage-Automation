@@ -16,11 +16,54 @@
       "id": "5b9745a5-bd01-488d-b5f1-05a55c99d6bb",
       "name": "Client Ticket",
       "webhookId": "9e6eb2c1-486d-4d20-9adc-2e06ee473be5"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer  "
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"gpt-4o-mini\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are an AI customer support triage assistant. Analyze incoming support tickets and return structured classification data.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Ticket details:\\n\\nTicket ID: {{ $json.ticket_id }}\\nCustomer Name: {{ $json.customer_name }}\\nCustomer Email: {{ $json.customer_email }}\\nSource: {{ $json.source }}\\nMessage: {{ $json.message }}\\n\\nReturn the response strictly in valid JSON with the following fields:\\n- category (Billing, Technical, Account, General)\\n- priority (Low, Medium, High, Critical)\\n- sentiment (Positive, Neutral, Negative)\\n- urgency (true or false)\\n- reasoning (short explanation)\"\n    }\n  ],\n  \"temperature\": 0.2\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -160,
+        -48
+      ],
+      "id": "238cc9ca-7501-431f-bb4e-6f700760a986",
+      "name": "Tickets Analysis",
+      "disabled": true
     }
   ],
   "pinData": {},
   "connections": {
     "Client Ticket": {
+      "main": [
+        [
+          {
+            "node": "Tickets Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tickets Analysis": {
       "main": [
         []
       ]
@@ -31,7 +74,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "728b8133-adbc-4984-b753-2c49488337f6",
+  "versionId": "75ebe3d4-3543-464e-94a6-f7d37bb0b5ec",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "f914190cad50301c71425aabbcd406a965b0f46e8d2b056eea4d20ab3b3b2ced"
