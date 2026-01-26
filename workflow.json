@@ -1,0 +1,41 @@
+{
+  "name": "AI Customer Support Triage Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "customer-ticket-info",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -368,
+        -48
+      ],
+      "id": "5b9745a5-bd01-488d-b5f1-05a55c99d6bb",
+      "name": "Client Ticket",
+      "webhookId": "9e6eb2c1-486d-4d20-9adc-2e06ee473be5"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Client Ticket": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "728b8133-adbc-4984-b753-2c49488337f6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f914190cad50301c71425aabbcd406a965b0f46e8d2b056eea4d20ab3b3b2ced"
+  },
+  "id": "JVhbt3L5P_GN3GSTJHNFc",
+  "tags": []
+}
