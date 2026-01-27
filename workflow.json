@@ -26,7 +26,7 @@
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer "
+              "value": "Bearer  "
             },
             {
               "name": "Content-Type",
@@ -42,7 +42,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -560,
+        -624,
         -160
       ],
       "id": "238cc9ca-7501-431f-bb4e-6f700760a986",
@@ -56,35 +56,35 @@
           "fieldValues": [
             {
               "fieldId": "ticket_id",
-              "fieldValue": "={{$json.ticket_id}}"
+              "fieldValue": "={{ $('Client Ticket').item.json.body.ticket_id }}"
             },
             {
               "fieldId": "customer_name",
-              "fieldValue": "={{$json.ticket_id}}"
+              "fieldValue": "={{ $('Client Ticket').item.json.body.customer_name }}"
             },
             {
               "fieldId": "customer_email",
-              "fieldValue": "={{$json.customer_email}}"
+              "fieldValue": "={{ $('Client Ticket').item.json.body.customer_email }}"
             },
             {
               "fieldId": "source",
-              "fieldValue": "={{$json.source}}"
+              "fieldValue": "={{ $('Client Ticket').item.json.body.source }}"
             },
             {
               "fieldId": "message",
-              "fieldValue": "={{$json.message}}"
+              "fieldValue": "={{ $('Client Ticket').item.json.body.message }}"
             },
             {
               "fieldId": "submitted_at",
-              "fieldValue": "={{ $json.submitted_at}}"
+              "fieldValue": "={{ $('Client Ticket').item.json.body.submitted_at }}"
             },
             {
               "fieldId": "category",
-              "fieldValue": "={{ $json.category}}"
+              "fieldValue": "={{ $json.category }}"
             },
             {
               "fieldId": "priority",
-              "fieldValue": "={{ $json.piority}}"
+              "fieldValue": "={{ $json.priority }}"
             },
             {
               "fieldId": "sentiment",
@@ -100,15 +100,15 @@
             },
             {
               "fieldId": "model_used",
-              "fieldValue": "={{ $json.model_used}}"
+              "fieldValue": "={{ $('Tickets Analysis').item.json.model }}"
             },
             {
               "fieldId": "workflow_execution_id",
-              "fieldValue": "={{$json.workflow_execution_id}}"
+              "fieldValue": "= {{ $workflow.name }}"
             },
             {
               "fieldId": "processed_at",
-              "fieldValue": "={{ $json.processed_at }}"
+              "fieldValue": "={{ new Date().toISOString() }}\n"
             }
           ]
         }
@@ -116,8 +116,8 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        288,
-        -224
+        -224,
+        -160
       ],
       "id": "ae75a313-256c-431e-acd7-c221449f681b",
       "name": "Store Ticket & AI Classification",
@@ -137,8 +137,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        80,
-        -48
+        128,
+        48
       ],
       "id": "a169ba62-9606-498c-aa54-677ec394d4b6",
       "name": "Edit Fields"
@@ -150,7 +150,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -320,
+        -432,
         -160
       ],
       "id": "ba36a9e5-f724-4e8b-9550-50a16c46f2a3",
@@ -228,7 +228,13 @@
     },
     "Parse & Normalize AI Classification": {
       "main": [
-        []
+        [
+          {
+            "node": "Store Ticket & AI Classification",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     }
   },
@@ -237,7 +243,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "33d25614-242e-45b2-a68d-810c4b28702b",
+  "versionId": "56b5cd5e-dda6-4de2-ad64-6375618ce51f",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "f914190cad50301c71425aabbcd406a965b0f46e8d2b056eea4d20ab3b3b2ced"
