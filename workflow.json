@@ -10,8 +10,8 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -368,
-        -48
+        -816,
+        -160
       ],
       "id": "5b9745a5-bd01-488d-b5f1-05a55c99d6bb",
       "name": "Client Ticket",
@@ -26,7 +26,7 @@
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer  "
+              "value": "Bearer "
             },
             {
               "name": "Content-Type",
@@ -42,15 +42,167 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -160,
-        -48
+        -560,
+        -160
       ],
       "id": "238cc9ca-7501-431f-bb4e-6f700760a986",
       "name": "Tickets Analysis",
-      "disabled": true
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "tableId": "Support_Tickets",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "ticket_id",
+              "fieldValue": "={{$json.ticket_id}}"
+            },
+            {
+              "fieldId": "customer_name",
+              "fieldValue": "={{$json.ticket_id}}"
+            },
+            {
+              "fieldId": "customer_email",
+              "fieldValue": "={{$json.customer_email}}"
+            },
+            {
+              "fieldId": "source",
+              "fieldValue": "={{$json.source}}"
+            },
+            {
+              "fieldId": "message",
+              "fieldValue": "={{$json.message}}"
+            },
+            {
+              "fieldId": "submitted_at",
+              "fieldValue": "={{ $json.submitted_at}}"
+            },
+            {
+              "fieldId": "category",
+              "fieldValue": "={{ $json.category}}"
+            },
+            {
+              "fieldId": "priority",
+              "fieldValue": "={{ $json.piority}}"
+            },
+            {
+              "fieldId": "sentiment",
+              "fieldValue": "={{ $json.sentiment}}"
+            },
+            {
+              "fieldId": "urgency",
+              "fieldValue": "={{ $json.urgency}}"
+            },
+            {
+              "fieldId": "reasoning",
+              "fieldValue": "={{ $json.reasoning}}"
+            },
+            {
+              "fieldId": "model_used",
+              "fieldValue": "={{ $json.model_used}}"
+            },
+            {
+              "fieldId": "workflow_execution_id",
+              "fieldValue": "={{$json.workflow_execution_id}}"
+            },
+            {
+              "fieldId": "processed_at",
+              "fieldValue": "={{ $json.processed_at }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        288,
+        -224
+      ],
+      "id": "ae75a313-256c-431e-acd7-c221449f681b",
+      "name": "Store Ticket & AI Classification",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "SsBj0Qw4IPAK6E0H",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        80,
+        -48
+      ],
+      "id": "a169ba62-9606-498c-aa54-677ec394d4b6",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "const results = $input.all().map(item => {\n  try {\n    const rawContent = item.json.choices[0].message.content;\n    const cleanContent = rawContent.replace(/```json|```/g, \"\").trim();\n    const parsedData = JSON.parse(cleanContent);\n\n    // Create a copy of the original JSON\n    let cleanJson = { ...item.json, ...parsedData };\n\n    // DELETE the messy original fields so they don't clutter your workflow\n    delete cleanJson.choices; \n\n    return { json: cleanJson };\n  } catch (error) {\n    return {\n      json: {\n        ...item.json,\n        parsing_error: error.message\n      }\n    };\n  }\n});\n\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -320,
+        -160
+      ],
+      "id": "ba36a9e5-f724-4e8b-9550-50a16c46f2a3",
+      "name": "Parse & Normalize AI Classification",
+      "alwaysOutputData": false
     }
   ],
-  "pinData": {},
+  "pinData": {
+    "Client Ticket": [
+      {
+        "json": {
+          "headers": {
+            "host": "uniqueggabriel.app.n8n.cloud",
+            "user-agent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.19041.6456",
+            "content-length": "299",
+            "accept-encoding": "gzip, br",
+            "cdn-loop": "cloudflare; loops=1; subreqs=1",
+            "cf-connecting-ip": "105.112.193.28",
+            "cf-ew-via": "15",
+            "cf-ipcountry": "NG",
+            "cf-ray": "9c4220dd7436ef51-LHR",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "cf-worker": "n8n.cloud",
+            "content-type": "application/json",
+            "x-forwarded-for": "105.112.193.28, 141.101.98.112",
+            "x-forwarded-host": "uniqueggabriel.app.n8n.cloud",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "traefik-prod-users-gwc-18-7959cfc789-zp8xj",
+            "x-is-trusted": "yes",
+            "x-real-ip": "105.112.193.28"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "customer_email": "john@example.com",
+            "customer_name": "John Doe",
+            "source": "support_form",
+            "ticket_id": "TCK-100231",
+            "priority_hint": "unknown",
+            "submitted_at": "2026-01-26T15:40:00Z",
+            "message": "I was charged twice for my subscription this month."
+          },
+          "webhookUrl": "https://uniqueggabriel.app.n8n.cloud/webhook-test/customer-ticket-info",
+          "executionMode": "test"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
   "connections": {
     "Client Ticket": {
       "main": [
@@ -65,16 +217,27 @@
     },
     "Tickets Analysis": {
       "main": [
+        [
+          {
+            "node": "Parse & Normalize AI Classification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse & Normalize AI Classification": {
+      "main": [
         []
       ]
     }
   },
-  "active": true,
+  "active": false,
   "settings": {
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "75ebe3d4-3543-464e-94a6-f7d37bb0b5ec",
+  "versionId": "33d25614-242e-45b2-a68d-810c4b28702b",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "f914190cad50301c71425aabbcd406a965b0f46e8d2b056eea4d20ab3b3b2ced"
