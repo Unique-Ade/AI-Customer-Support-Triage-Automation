@@ -290,8 +290,8 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.2,
       "position": [
-        -304,
-        -384
+        -288,
+        -432
       ],
       "id": "369fc3b9-8634-4050-a2ea-85f706d3e00c",
       "name": "High Priority Alert",
@@ -302,6 +302,19 @@
           "name": "Gmail account"
         }
       }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -272,
+        -240
+      ],
+      "id": "ccf342b6-6027-4e18-8341-920c967754bc",
+      "name": "Route to Billing / Finance Queue"
     }
   ],
   "pinData": {},
@@ -358,6 +371,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Route to Billing / Finance Queue",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     }
@@ -367,7 +387,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "1092c379-af6a-49cd-a7ef-075050c0cdea",
+  "versionId": "aa3018b1-8fa7-4804-b133-d4e59c0973cf",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "f914190cad50301c71425aabbcd406a965b0f46e8d2b056eea4d20ab3b3b2ced"
