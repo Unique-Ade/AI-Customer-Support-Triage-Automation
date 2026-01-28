@@ -60,7 +60,7 @@ Supabase serves as the **single source of truth**.
 
 ## Workflow Overview
 
-![Workflow Overview](./workflow-overview.png)
+![Workflow Overview](workflow_overview.PNG)
 
 > The workflow begins with a webhook trigger, followed by AI classification, database storage, routing logic, and conditional escalation.
 
