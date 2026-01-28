@@ -10,7 +10,7 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -816,
+        -1200,
         -160
       ],
       "id": "5b9745a5-bd01-488d-b5f1-05a55c99d6bb",
@@ -36,13 +36,13 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"model\": \"gpt-4o-mini\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are an AI customer support triage assistant. Analyze incoming support tickets and return structured classification data.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Ticket details:\\n\\nTicket ID: {{ $json.ticket_id }}\\nCustomer Name: {{ $json.customer_name }}\\nCustomer Email: {{ $json.customer_email }}\\nSource: {{ $json.source }}\\nMessage: {{ $json.message }}\\n\\nReturn the response strictly in valid JSON with the following fields:\\n- category (Billing, Technical, Account, General)\\n- priority (Low, Medium, High, Critical)\\n- sentiment (Positive, Neutral, Negative)\\n- urgency (true or false)\\n- reasoning (short explanation)\"\n    }\n  ],\n  \"temperature\": 0.2\n}\n",
+        "jsonBody": "={\n  \"model\": \"gpt-4o-mini\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are an enterprise AI support ticket classification assistant. You must strictly follow the rules provided and return consistent, conservative classifications suitable for automated routing.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Ticket details:\\n\\nTicket ID: {{ $json.body.ticket_id }}\\nCustomer Name: {{ $json.body.customer_name }}\\nCustomer Email: {{ $json.body.customer_email }}\\nSource: {{ $json.body.source }}\\nMessage: {{ $json.body.message }}\\n\\nCLASSIFICATION RULES:\\n\\nCATEGORY (choose ONE):\\n- Billing: payments, invoices, refunds, charges, pricing\\n- Technical: bugs, crashes, errors, integrations, performance issues\\n- Feature_Request: feature requests, enhancements, suggestions\\n- General: general questions, product information, unclear issues\\n\\nPRIORITY RULES (STRICT):\\n- High: ONLY if the message explicitly states system outage, system down, production failure, revenue loss, or security incident.\\n- Medium: functional issues affecting a single user or non-blocking functionality.\\n- Low: general questions or feature requests.\\n\\nIMPORTANT:\\n- Do NOT infer High priority unless the High conditions are explicitly mentioned.\\n- Do NOT return \\\"Critical\\\" as a priority.\\n- If an issue would normally be Critical, return priority as \\\"High\\\" instead.\\n\\nURGENCY:\\n- urgency = true ONLY if priority is High\\n\\nReturn STRICTLY valid JSON with EXACTLY these keys:\\n- category\\n- priority\\n- sentiment\\n- urgency\\n- reasoning\"\n    }\n  ],\n  \"temperature\": 0\n}\n\n",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -624,
+        -1008,
         -160
       ],
       "id": "238cc9ca-7501-431f-bb4e-6f700760a986",
@@ -116,7 +116,7 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -224,
+        -608,
         -160
       ],
       "id": "ae75a313-256c-431e-acd7-c221449f681b",
@@ -131,78 +131,157 @@
     },
     {
       "parameters": {
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        128,
-        48
-      ],
-      "id": "a169ba62-9606-498c-aa54-677ec394d4b6",
-      "name": "Edit Fields"
-    },
-    {
-      "parameters": {
         "jsCode": "const results = $input.all().map(item => {\n  try {\n    const rawContent = item.json.choices[0].message.content;\n    const cleanContent = rawContent.replace(/```json|```/g, \"\").trim();\n    const parsedData = JSON.parse(cleanContent);\n\n    // Create a copy of the original JSON\n    let cleanJson = { ...item.json, ...parsedData };\n\n    // DELETE the messy original fields so they don't clutter your workflow\n    delete cleanJson.choices; \n\n    return { json: cleanJson };\n  } catch (error) {\n    return {\n      json: {\n        ...item.json,\n        parsing_error: error.message\n      }\n    };\n  }\n});\n\nreturn results;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -432,
+        -816,
         -160
       ],
       "id": "ba36a9e5-f724-4e8b-9550-50a16c46f2a3",
       "name": "Parse & Normalize AI Classification",
       "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.priority }}",
+                    "rightValue": "High",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "9749e326-d081-4c83-a6fd-309318a429ca"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "High Priority"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "edda9a83-d292-4cc2-8980-2bd6404bc855",
+                    "leftValue": "={{ $json.category }}",
+                    "rightValue": "Billing",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Billing"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "4a28e9da-de24-4752-a8f7-6588628c872c",
+                    "leftValue": "={{ $json.category }}",
+                    "rightValue": "Technical",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Technical"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "8da0837e-8470-4949-a711-4f45d4f170fa",
+                    "leftValue": "={{ $json.category }}",
+                    "rightValue": "Feature_Request",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Product Feature"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "226a7987-df4c-4d3e-809b-6b52aa812553",
+                    "leftValue": "={{ $json.category }}",
+                    "rightValue": "General",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "General"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -400,
+        -208
+      ],
+      "id": "d2a7309a-2bbe-4e5a-b711-9db34eee6d38",
+      "name": "Switch"
     }
   ],
-  "pinData": {
-    "Client Ticket": [
-      {
-        "json": {
-          "headers": {
-            "host": "uniqueggabriel.app.n8n.cloud",
-            "user-agent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.19041.6456",
-            "content-length": "299",
-            "accept-encoding": "gzip, br",
-            "cdn-loop": "cloudflare; loops=1; subreqs=1",
-            "cf-connecting-ip": "105.112.193.28",
-            "cf-ew-via": "15",
-            "cf-ipcountry": "NG",
-            "cf-ray": "9c4220dd7436ef51-LHR",
-            "cf-visitor": "{\"scheme\":\"https\"}",
-            "cf-worker": "n8n.cloud",
-            "content-type": "application/json",
-            "x-forwarded-for": "105.112.193.28, 141.101.98.112",
-            "x-forwarded-host": "uniqueggabriel.app.n8n.cloud",
-            "x-forwarded-port": "443",
-            "x-forwarded-proto": "https",
-            "x-forwarded-server": "traefik-prod-users-gwc-18-7959cfc789-zp8xj",
-            "x-is-trusted": "yes",
-            "x-real-ip": "105.112.193.28"
-          },
-          "params": {},
-          "query": {},
-          "body": {
-            "customer_email": "john@example.com",
-            "customer_name": "John Doe",
-            "source": "support_form",
-            "ticket_id": "TCK-100231",
-            "priority_hint": "unknown",
-            "submitted_at": "2026-01-26T15:40:00Z",
-            "message": "I was charged twice for my subscription this month."
-          },
-          "webhookUrl": "https://uniqueggabriel.app.n8n.cloud/webhook-test/customer-ticket-info",
-          "executionMode": "test"
-        },
-        "pairedItem": {
-          "item": 0
-        }
-      }
-    ]
-  },
+  "pinData": {},
   "connections": {
     "Client Ticket": {
       "main": [
@@ -236,6 +315,17 @@
           }
         ]
       ]
+    },
+    "Store Ticket & AI Classification": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -243,7 +333,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "56b5cd5e-dda6-4de2-ad64-6375618ce51f",
+  "versionId": "87811be6-137e-44b6-9f3e-d953fc7e7be0",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "f914190cad50301c71425aabbcd406a965b0f46e8d2b056eea4d20ab3b3b2ced"
