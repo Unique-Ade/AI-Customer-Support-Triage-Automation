@@ -10,8 +10,8 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -1200,
-        -160
+        -1408,
+        -176
       ],
       "id": "5b9745a5-bd01-488d-b5f1-05a55c99d6bb",
       "name": "Client Ticket",
@@ -42,8 +42,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -1008,
-        -160
+        -1216,
+        -176
       ],
       "id": "238cc9ca-7501-431f-bb4e-6f700760a986",
       "name": "Tickets Analysis",
@@ -116,8 +116,8 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -608,
-        -160
+        -816,
+        -176
       ],
       "id": "ae75a313-256c-431e-acd7-c221449f681b",
       "name": "Store Ticket & AI Classification",
@@ -136,8 +136,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -816,
-        -160
+        -1024,
+        -176
       ],
       "id": "ba36a9e5-f724-4e8b-9550-50a16c46f2a3",
       "name": "Parse & Normalize AI Classification",
@@ -274,11 +274,34 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.4,
       "position": [
-        -400,
-        -208
+        -608,
+        -224
       ],
       "id": "d2a7309a-2bbe-4e5a-b711-9db34eee6d38",
       "name": "Switch"
+    },
+    {
+      "parameters": {
+        "sendTo": "olagbenrogabriel@gmail.com",
+        "subject": "🚨 High Priority Support Ticket Alert – Immediate Attention Required",
+        "message": "=<!DOCTYPE html>\n<html>\n<head>\n  <style>\n    body {\n      font-family: Arial, Helvetica, sans-serif;\n      background-color: #f4f6f8;\n      padding: 20px;\n      color: #333;\n    }\n    .container {\n      background-color: #ffffff;\n      border-radius: 6px;\n      padding: 20px;\n      max-width: 600px;\n      margin: auto;\n      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);\n    }\n    .header {\n      color: #b91c1c;\n      font-size: 20px;\n      font-weight: bold;\n      margin-bottom: 16px;\n    }\n    .label {\n      font-weight: bold;\n      margin-top: 12px;\n    }\n    .value {\n      margin-bottom: 10px;\n    }\n    .message-box {\n      background-color: #f9fafb;\n      border-left: 4px solid #ef4444;\n      padding: 12px;\n      margin-top: 10px;\n      white-space: pre-wrap;\n    }\n    .footer {\n      margin-top: 20px;\n      font-size: 12px;\n      color: #666;\n    }\n  </style>\n</head>\n\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n      🚨 High Priority Support Ticket Detected\n    </div>\n\n    <div class=\"label\">Ticket ID:</div>\n    <div class=\"value\">{{ $('Client Ticket').item.json.body.ticket_id }}</div>\n\n    <div class=\"label\">Customer Name:</div>\n    <div class=\"value\">{{ $('Client Ticket').item.json.body.customer_name }}</div>\n\n    <div class=\"label\">Customer Email:</div>\n    <div class=\"value\">{{ $('Client Ticket').item.json.body.customer_email }}</div>\n\n    <div class=\"label\">Category:</div>\n    <div class=\"value\">{{ $('Store Ticket & AI Classification').item.json.category }}</div>\n\n    <div class=\"label\">Priority:</div>\n    <div class=\"value\">{{ $('Store Ticket & AI Classification').item.json.priority }}</div>\n\n    <div class=\"label\">Customer Message:</div>\n    <div class=\"message-box\">\n      {{ $('Store Ticket & AI Classification').item.json.message }}\n    </div>\n\n    <div class=\"footer\">\n      This alert was generated automatically by the AI Support Triage Workflow.<br />\n      Please review and take action as soon as possible.\n    </div>\n  </div>\n</body>\n</html>\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -304,
+        -384
+      ],
+      "id": "369fc3b9-8634-4050-a2ea-85f706d3e00c",
+      "name": "High Priority Alert",
+      "webhookId": "1a49a1ea-23f9-4c8c-9591-52c4d3aab26c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "cPu2x8pYRpwrK07z",
+          "name": "Gmail account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -326,6 +349,17 @@
           }
         ]
       ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "High Priority Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -333,7 +367,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "87811be6-137e-44b6-9f3e-d953fc7e7be0",
+  "versionId": "1092c379-af6a-49cd-a7ef-075050c0cdea",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "f914190cad50301c71425aabbcd406a965b0f46e8d2b056eea4d20ab3b3b2ced"
