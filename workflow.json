@@ -290,8 +290,8 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.2,
       "position": [
-        -288,
-        -432
+        -256,
+        -544
       ],
       "id": "369fc3b9-8634-4050-a2ea-85f706d3e00c",
       "name": "High Priority Alert",
@@ -310,11 +310,50 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -272,
-        -240
+        -96,
+        -400
       ],
       "id": "ccf342b6-6027-4e18-8341-920c967754bc",
       "name": "Route to Billing / Finance Queue"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -16,
+        -208
+      ],
+      "id": "f0980f25-37ee-4d9e-84a2-f244b121d0cd",
+      "name": "Route to Engineering Support Queue"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -96,
+        -32
+      ],
+      "id": "43d77aa5-066f-466b-af9c-1546706d7462",
+      "name": "Route to Product Backlog"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -224,
+        144
+      ],
+      "id": "53ec5b3c-55bd-4541-a7ce-31114b46cdf2",
+      "name": "Route to General Support Queue"
     }
   ],
   "pinData": {},
@@ -378,6 +417,27 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Route to Engineering Support Queue",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Route to Product Backlog",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Route to General Support Queue",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     }
@@ -387,7 +447,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "aa3018b1-8fa7-4804-b133-d4e59c0973cf",
+  "versionId": "020cc6b0-4278-466e-87b8-35f856ae5180",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "f914190cad50301c71425aabbcd406a965b0f46e8d2b056eea4d20ab3b3b2ced"
