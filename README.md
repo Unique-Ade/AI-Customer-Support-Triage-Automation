@@ -3,9 +3,7 @@
 ## Overview
 
 This project implements an **AI-powered customer support ticket triage and routing system** designed to reflect how modern US-based companies manage customer support operations at scale.
-
-## Workflow Overview
-
+##
 ![](workflow_overview.PNG)
 
 > The workflow begins with a webhook trigger, followed by AI classification, database storage, routing logic, and conditional escalation.
